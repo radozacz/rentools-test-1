@@ -1,0 +1,21 @@
+{
+  "name": "rentools-map-scraper",
+  "version": "1.0.0",
+  "description": "Automated contact data collection for equipment rental companies from interactive maps",
+  "main": "dist/index.js",
+  "scripts": {
+    "start-search": "ts-node src/scripts/search.ts",
+    "start-details": "ts-node src/scripts/details.ts",
+    "build": "tsc"
+  },
+  "keywords": ["scraper", "playwright", "map", "rental", "germany"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "ts-node": "^10.9.2"
+  }
+}
