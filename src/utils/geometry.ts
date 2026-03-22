@@ -17,8 +17,8 @@ interface GeoJsonCollection {
   features: GeoJsonFeature[];
 }
 
-export function loadGermanyPolygon(): Polygon {
-  const filePath = path.join(process.cwd(), "src", "data", "germany-coordinates.json");
+export function loadCountryPolygon(polygonPath: string): Polygon {
+  const filePath = path.join(process.cwd(), polygonPath);
   const raw = fs.readFileSync(filePath, "utf-8");
   const json = JSON.parse(raw) as GeoJsonCollection;
   const ring = json.features[0]!.geometry.coordinates[0]!;
