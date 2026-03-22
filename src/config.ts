@@ -1,4 +1,24 @@
 export const config = {
+  geo: {
+    countryName: "Germany",
+    polygonPath: "src/data/germany-coordinates.json",
+    allowedCountryNames: ["Germany", "Deutschland"],
+    blockedCountryNames: [
+      "Poland",
+      "Polska",
+      "Czechia",
+      "Czech Republic",
+      "Czechy",
+      "Austria",
+      "Österreich",
+      "Netherlands",
+      "Belgium",
+      "France",
+      "Switzerland",
+      "Luxembourg",
+      "Denmark",
+    ],
+  },
   map: {
     zoom: 9,
     viewport: {
@@ -11,9 +31,10 @@ export const config = {
     maxRows: 50,
   },
   movement: {
+    horizontalStepCount: 2,
+    verticalStepCount: 2,
     horizontalStepSleepMs: 1200,
     verticalStepSleepMs: 900,
-    rowShiftSteps: 2,
   },
   search: {
     // query: "Werkzeugverleih"          // wypożyczalnia narzędzi
@@ -30,4 +51,3 @@ export const config = {
     detailsJsonPath: "output/results-final.json",
   },
 } as const;
-

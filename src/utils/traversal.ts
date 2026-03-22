@@ -48,7 +48,9 @@ export async function moveHorizontallyUntilOutside(
   while (true) {
     step += 1;
 
-    await pressArrow(page, direction, config.movement.horizontalStepSleepMs);
+    for (let i = 0; i < config.movement.horizontalStepCount; i++) {
+      await pressArrow(page, direction, config.movement.horizontalStepSleepMs);
+    }
 
     const center = await getMapCenterFromUrl(page);
     const url = page.url();
@@ -84,23 +86,23 @@ export async function moveDownByConfiguredAmount(
   state: SeedState,
 ): Promise<LatLng | null> {
   console.log(
-    `[row ${nextRowIndex}] [down] moving down by ${config.movement.rowShiftSteps} steps...`,
+    `[row ${nextRowIndex}] [down] moving down by ${config.movement.verticalStepCount} steps...`,
   );
 
   let lastCenter: LatLng | null = null;
 
-  for (let i = 0; i < config.movement.rowShiftSteps; i++) {
+  for (let i = 0; i < config.movement.verticalStepCount; i++) {
     await pressArrow(page, "down", config.movement.verticalStepSleepMs);
 
     const center = await getMapCenterFromUrl(page);
     console.log(
-      `[row ${nextRowIndex}] [down ${i + 1}/${config.movement.rowShiftSteps}] center=`,
+      `[row ${nextRowIndex}] [down ${i + 1}/${config.movement.verticalStepCount}] center=`,
       center,
     );
 
     if (!center) {
       console.log(
-        `[row ${nextRowIndex}] [down ${i + 1}/${config.movement.rowShiftSteps}] could not read center.`,
+        `[row ${nextRowIndex}] [down ${i + 1}/${config.movement.verticalStepCount}] could not read center.`,
       );
       return null;
     }

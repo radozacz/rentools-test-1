@@ -8,7 +8,7 @@
     "start-details": "ts-node src/scripts/details.ts",
     "build": "tsc"
   },
-  "keywords": ["scraper", "playwright", "map", "rental", "germany"],
+  "keywords": ["scraper", "playwright", "map", "rental"],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.10.0",
