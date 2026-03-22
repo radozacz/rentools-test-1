@@ -2,10 +2,10 @@ export const config = {
   geo: {
     countryName: "Poland",
     polygonPath: "src/data/poland-coordinates.json",
-    allowedCountryNames: ["Poland",
-      "Polska",],
+    allowedCountryNames: ["Poland", "Polska"],
     blockedCountryNames: [
-      "Germany", "Deutschland",
+      "Germany",
+      "Deutschland",
       "Poland",
       "Polska",
       "Czechia",
@@ -45,7 +45,7 @@ export const config = {
     // query: "Baugeräteverleih"         // wypożyczalnia sprzętu budowlanego
     // query: "Elektrowerkzeug Verleih"  // wypożyczalnia elektronarzędzi
     // query: "Baumaschinenverleih",
-    query: "Szpital Uzdrowiskowy",
+    query: "Sanatorium",
     resultsSettleMs: 2500,
   },
   output: {
@@ -53,4 +53,3 @@ export const config = {
     detailsJsonPath: "output/results-final.json",
   },
 } as const;
-
