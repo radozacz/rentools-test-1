@@ -1,9 +1,11 @@
 export const config = {
   geo: {
-    countryName: "Germany",
-    polygonPath: "src/data/germany-coordinates.json",
-    allowedCountryNames: ["Germany", "Deutschland"],
+    countryName: "Poland",
+    polygonPath: "src/data/poland-coordinates.json",
+    allowedCountryNames: ["Poland",
+      "Polska",],
     blockedCountryNames: [
+      "Germany", "Deutschland",
       "Poland",
       "Polska",
       "Czechia",
@@ -42,7 +44,8 @@ export const config = {
     // query: "Geräteverleih"            // wypożyczalnia sprzętu
     // query: "Baugeräteverleih"         // wypożyczalnia sprzętu budowlanego
     // query: "Elektrowerkzeug Verleih"  // wypożyczalnia elektronarzędzi
-    query: "Baumaschinenverleih",
+    // query: "Baumaschinenverleih",
+    query: "Szpital Uzdrowiskowy",
     resultsSettleMs: 2500,
   },
   output: {
