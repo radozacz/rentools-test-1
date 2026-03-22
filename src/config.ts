@@ -33,9 +33,10 @@ export const config = {
     maxRows: 50,
   },
   movement: {
+    horizontalStepCount: 1,
+    verticalStepCount: 2,
     horizontalStepSleepMs: 1200,
     verticalStepSleepMs: 900,
-    rowShiftSteps: 2,
   },
   search: {
     // query: "Werkzeugverleih"          // wypożyczalnia narzędzi
