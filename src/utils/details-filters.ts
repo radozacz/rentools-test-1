@@ -1,29 +1,15 @@
 import type { PlaceDetails } from "../types";
-import { isPointInPolygon, loadGermanyPolygon } from "./geometry";
+import { config } from "../config";
+import { isPointInPolygon, loadCountryPolygon } from "./geometry";
 
-const ALLOWED_COUNTRY_TERMS = ["germany", "deutschland"];
-const BLOCKED_COUNTRY_TERMS = [
-  "poland",
-  "polska",
-  "czechia",
-  "czech republic",
-  "czechy",
-  "austria",
-  "österreich",
-  "netherlands",
-  "belgium",
-  "france",
-  "switzerland",
-  "luxembourg",
-  "denmark",
-];
+const countryPolygon = loadCountryPolygon(config.geo.polygonPath);
+const allowedTerms = config.geo.allowedCountryNames.map((n) => n.toLowerCase());
+const blockedTerms = config.geo.blockedCountryNames.map((n) => n.toLowerCase());
 
-const germanyPolygon = loadGermanyPolygon();
-
-export function isInsideGermany(lat: number | null, lng: number | null): boolean {
+export function isInsideCountryPolygon(lat: number | null, lng: number | null): boolean {
   if (lat === null || lng === null) return false;
 
-  return isPointInPolygon({ lat, lng }, germanyPolygon);
+  return isPointInPolygon({ lat, lng }, countryPolygon);
 }
 
 export function normalizeAddress(address: string | null): string | null {
@@ -36,41 +22,30 @@ export function detectCountryFromAddress(address: string | null): string | null 
   const normalized = normalizeAddress(address)?.toLowerCase() ?? null;
   if (!normalized) return null;
 
-  if (ALLOWED_COUNTRY_TERMS.some((term) => normalized.includes(term))) {
-    return "Germany";
+  if (allowedTerms.some((term) => normalized.includes(term))) {
+    return config.geo.countryName;
   }
 
-  if (normalized.includes("poland") || normalized.includes("polska")) return "Poland";
-  if (
-    normalized.includes("czechia") ||
-    normalized.includes("czech republic") ||
-    normalized.includes("czechy")
-  ) {
-    return "Czechia";
-  }
-  if (normalized.includes("austria") || normalized.includes("österreich")) return "Austria";
-  if (normalized.includes("netherlands")) return "Netherlands";
-  if (normalized.includes("belgium")) return "Belgium";
-  if (normalized.includes("france")) return "France";
-  if (normalized.includes("switzerland")) return "Switzerland";
-  if (normalized.includes("luxembourg")) return "Luxembourg";
-  if (normalized.includes("denmark")) return "Denmark";
+  const blockedMatch = config.geo.blockedCountryNames.find((name) =>
+    normalized.includes(name.toLowerCase()),
+  );
+  if (blockedMatch) return blockedMatch;
 
   return null;
 }
 
-export function isSuspiciousForeignAddress(address: string | null): boolean {
+export function hasBlockedCountryInAddress(address: string | null): boolean {
   const normalized = normalizeAddress(address)?.toLowerCase() ?? null;
   if (!normalized) return false;
 
-  return BLOCKED_COUNTRY_TERMS.some((term) => normalized.includes(term));
+  return blockedTerms.some((term) => normalized.includes(term));
 }
 
-export function shouldKeepGermanRecord(record: PlaceDetails): boolean {
-  const insideGermany = isInsideGermany(record.lat, record.lng);
-  if (!insideGermany) return false;
+export function shouldKeepRecord(record: PlaceDetails): boolean {
+  const insideCountry = isInsideCountryPolygon(record.lat, record.lng);
+  if (!insideCountry) return false;
 
-  if (isSuspiciousForeignAddress(record.address)) {
+  if (hasBlockedCountryInAddress(record.address)) {
     return false;
   }
 

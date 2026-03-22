@@ -4,7 +4,7 @@ import {
   getPolygonBounds,
   getTopLeftCorner,
   isBelowBounds,
-  loadGermanyPolygon,
+  loadCountryPolygon,
 } from "../utils/geometry";
 import { buildMapUrl, focusMap, getMapCenterFromUrl } from "../utils/map";
 import { SeedState } from "../utils/state";
@@ -17,7 +17,7 @@ import {
 import type { HorizontalDirection } from "../types";
 
 async function main() {
-  const polygon = loadGermanyPolygon();
+  const polygon = loadCountryPolygon(config.geo.polygonPath);
   const bounds = getPolygonBounds(polygon);
   const state = new SeedState();
 

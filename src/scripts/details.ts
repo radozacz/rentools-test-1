@@ -4,7 +4,7 @@ import type { PlaceDetails } from "../types";
 import { scrapePlaceDetails } from "../utils/details-scraper";
 import {
   getDedupeKey,
-  shouldKeepGermanRecord,
+  shouldKeepRecord,
   detectCountryFromAddress,
 } from "../utils/details-filters";
 import { config } from "../config";
@@ -50,8 +50,8 @@ async function main() {
         detectedCountry,
       });
 
-      if (!shouldKeepGermanRecord(record)) {
-        console.log("[details] skipped: not confidently in Germany");
+      if (!shouldKeepRecord(record)) {
+        console.log(`[details] skipped: not confidently in ${config.geo.countryName}`);
         continue;
       }
 

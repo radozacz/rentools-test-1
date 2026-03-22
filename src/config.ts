@@ -1,4 +1,24 @@
 export const config = {
+  geo: {
+    countryName: "Germany",
+    polygonPath: "src/data/germany-coordinates.json",
+    allowedCountryNames: ["Germany", "Deutschland"],
+    blockedCountryNames: [
+      "Poland",
+      "Polska",
+      "Czechia",
+      "Czech Republic",
+      "Czechy",
+      "Austria",
+      "Österreich",
+      "Netherlands",
+      "Belgium",
+      "France",
+      "Switzerland",
+      "Luxembourg",
+      "Denmark",
+    ],
+  },
   map: {
     zoom: 9,
     viewport: {
