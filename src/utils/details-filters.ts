@@ -60,3 +60,18 @@ export function getDedupeKey(record: PlaceDetails): string {
     `${record.name ?? "unknown"}::${record.address ?? "unknown"}`
   );
 }
+
+/** Merge: if existing is null and incoming is not null → use incoming; otherwise keep existing. */
+export function mergePlaceDetails(existing: PlaceDetails, incoming: PlaceDetails): PlaceDetails {
+  return {
+    placeId: existing.placeId ?? incoming.placeId,
+    cid: existing.cid ?? incoming.cid,
+    sourceId: existing.sourceId ?? incoming.sourceId,
+    name: existing.name ?? incoming.name,
+    address: existing.address ?? incoming.address,
+    phone: existing.phone ?? incoming.phone,
+    website: existing.website ?? incoming.website,
+    lat: existing.lat ?? incoming.lat,
+    lng: existing.lng ?? incoming.lng,
+  };
+}

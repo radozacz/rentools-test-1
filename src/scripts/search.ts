@@ -8,7 +8,7 @@ import {
 } from "../utils/geometry";
 import { buildMapUrl, focusMap, getMapCenterFromUrl } from "../utils/map";
 import { SeedState } from "../utils/state";
-import { saveSeedsToJson } from "../utils/storage";
+import { loadSeedsFromJson, saveSeedsToJson } from "../utils/storage";
 import {
   collectSeedsAndPersist,
   moveDownByConfiguredAmount,
@@ -20,6 +20,10 @@ async function main() {
   const polygon = loadCountryPolygon(config.geo.polygonPath);
   const bounds = getPolygonBounds(polygon);
   const state = new SeedState();
+
+  const existingSeeds = loadSeedsFromJson(config.output.seedsJsonPath);
+  state.addMany(existingSeeds);
+  console.log(`[startup] loaded existing seeds: ${existingSeeds.length}`);
 
   const startPoint = getTopLeftCorner(bounds);
   const startUrl = buildMapUrl(startPoint, config.map.zoom);

@@ -1,20 +1,23 @@
 import { chromium } from "playwright";
-import { loadSeedsFromJson, saveFinalToJson } from "../utils/storage";
-import type { PlaceDetails } from "../types";
+import { loadSeedsFromJson, loadFinalFromJson, saveFinalToJson } from "../utils/storage";
 import { scrapePlaceDetails } from "../utils/details-scraper";
 import {
-  getDedupeKey,
   shouldKeepRecord,
   detectCountryFromAddress,
 } from "../utils/details-filters";
+import { DetailsState } from "../utils/details-state";
 import { config } from "../config";
 
-const { seedsJsonPath, detailsJsonPath } = config.output
+const { seedsJsonPath, detailsJsonPath } = config.output;
 
 async function main() {
   const seeds = loadSeedsFromJson(seedsJsonPath);
+  const existingFinal = loadFinalFromJson(detailsJsonPath);
+  const finalState = new DetailsState(existingFinal);
 
-  console.log(`[details] loaded seeds: ${seeds.length}`);
+  console.log(`[startup] loaded existing seeds: ${seeds.length}`);
+  console.log(`[startup] loaded existing final records: ${existingFinal.length}`);
+  console.log(`[details] processing seeds: ${seeds.length}`);
 
   const browser = await chromium.launch({
     headless: false,
@@ -26,8 +29,6 @@ async function main() {
   });
 
   const page = await context.newPage();
-
-  const finalMap = new Map<string, PlaceDetails>();
 
   for (let i = 0; i < seeds.length; i++) {
     const seed = seeds[i]!;
@@ -55,26 +56,8 @@ async function main() {
         continue;
       }
 
-      const key = getDedupeKey(record);
-      const existing = finalMap.get(key);
-
-      if (!existing) {
-        finalMap.set(key, record);
-      } else {
-        finalMap.set(key, {
-          placeId: existing.placeId ?? record.placeId,
-          cid: existing.cid ?? record.cid,
-          sourceId: existing.sourceId ?? record.sourceId,
-          name: existing.name ?? record.name,
-          address: existing.address ?? record.address,
-          phone: existing.phone ?? record.phone,
-          website: existing.website ?? record.website,
-          lat: existing.lat ?? record.lat,
-          lng: existing.lng ?? record.lng,
-        });
-      }
-
-      saveFinalToJson(detailsJsonPath, [...finalMap.values()]);
+      finalState.addOrMerge(record);
+      saveFinalToJson(detailsJsonPath, finalState.getAll());
     } catch (error) {
       console.error("[details] failed:", seed.href, error);
     }
@@ -82,7 +65,7 @@ async function main() {
 
   await browser.close();
 
-  console.log(`[details] done. final records: ${finalMap.size}`);
+  console.log(`[details] done. final records: ${finalState.size}`);
   console.log(`[details] saved to: ${detailsJsonPath}`);
 }
 
