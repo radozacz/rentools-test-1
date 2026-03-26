@@ -17,6 +17,8 @@ import {
 import type { HorizontalDirection } from "../types";
 
 async function main() {
+  console.log(`[startup] maps base URL: ${config.map.googleMapsBaseUrl}`);
+
   const polygon = loadCountryPolygon(config.geo.polygonPath);
   const bounds = getPolygonBounds(polygon);
   const state = new SeedState();

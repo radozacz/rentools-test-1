@@ -25,7 +25,7 @@ export const config = {
       width: 1280,
       height: 900,
     },
-    googleMapsBaseUrl: "https://www.google.com/maps",
+    googleMapsBaseUrl: "https://www.google.de/maps",
   },
   traversal: {
     maxRows: 50,

@@ -1,6 +1,7 @@
 import type { Locator, Page } from "playwright";
 import { config } from "../config";
 import type { PlaceSeed } from "../types";
+import { getGoogleMapsOrigin } from "./map";
 
 function normalizeText(value: string | null | undefined): string | null {
   if (!value) return null;
@@ -11,7 +12,7 @@ function normalizeText(value: string | null | undefined): string | null {
 function absolutizeGoogleMapsHref(href: string | null): string | null {
   if (!href) return null;
   if (href.startsWith("http://") || href.startsWith("https://")) return href;
-  if (href.startsWith("/")) return `https://www.google.com${href}`;
+  if (href.startsWith("/")) return `${getGoogleMapsOrigin()}${href}`;
   return href;
 }
 

@@ -2,6 +2,10 @@ import type { Page } from "playwright";
 import { config } from "../config";
 import type { LatLng } from "../types";
 
+export function getGoogleMapsOrigin(): string {
+  return new URL(config.map.googleMapsBaseUrl).origin;
+}
+
 export type MoveDirection = "up" | "down" | "left" | "right";
 
 const directionToKey: Record<MoveDirection, string> = {
