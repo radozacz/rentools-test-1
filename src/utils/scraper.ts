@@ -40,32 +40,24 @@ function parseGoogleMapsHref(href: string | null): {
 }
 
 export async function clickSearchThisArea(page: Page): Promise<boolean> {
-  const candidates = page.locator("button, div[role='button']");
-  const count = await candidates.count();
+  const el = page.locator(config.search.searchThisAreaButtonSelector).first();
 
-  for (let i = 0; i < count; i++) {
-    const el = candidates.nth(i);
-
-    try {
-      if (!(await el.isVisible())) continue;
-
-      const text = (await el.textContent())?.replace(/\s+/g, " ").trim().toLowerCase();
-      if (!text) continue;
-
-      if (text.includes("search this area")) {
-        console.log("[search] clicking 'Search this area'...");
-        await el.click();
-        await page.waitForTimeout(config.search.resultsSettleMs);
-        return true;
-      }
-    } catch {
-      // ignore
+  try {
+    if (!(await el.isVisible())) {
+      console.log("[search] button not found");
+      await page.waitForTimeout(config.search.resultsSettleMs);
+      return false;
     }
-  }
 
-  console.log("[search] button not found");
-  await page.waitForTimeout(config.search.resultsSettleMs);
-  return false;
+    console.log("[search] clicking 'Search this area'...");
+    await el.click();
+    await page.waitForTimeout(config.search.resultsSettleMs);
+    return true;
+  } catch {
+    console.log("[search] button not found");
+    await page.waitForTimeout(config.search.resultsSettleMs);
+    return false;
+  }
 }
 
 export async function getResultsFeed(page: Page): Promise<Locator | null> {

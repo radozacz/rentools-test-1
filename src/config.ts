@@ -45,6 +45,8 @@ export const config = {
     // query: "Elektrowerkzeug Verleih"  // wypożyczalnia elektronarzędzi
     query: "Baumaschinenverleih",
     resultsSettleMs: 2500,
+    // Control that reapplies the search after the map moves
+    searchThisAreaButtonSelector: 'button[jsaction*="search.refresh"]',
   },
   output: {
     seedsJsonPath: "output/results-seeds.json",
