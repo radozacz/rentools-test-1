@@ -1,12 +1,7 @@
 import type { Page } from "playwright";
 import type { PlaceDetails, PlaceSeed } from "../types";
+import { cleanScrapedText, normalizeAddressForOutput } from "./text";
 import { parseCenterFromGoogleMapsUrl } from "./map";
-
-function normalizeText(value: string | null | undefined): string | null {
-  if (!value) return null;
-  const cleaned = value.replace(/\s+/g, " ").trim();
-  return cleaned.length ? cleaned : null;
-}
 
 async function getTextFromFirstVisible(
   page: Page,
@@ -19,7 +14,7 @@ async function getTextFromFirstVisible(
       if (!(await locator.count())) continue;
       if (!(await locator.isVisible())) continue;
 
-      const text = normalizeText(await locator.textContent());
+      const text = cleanScrapedText(await locator.textContent());
       if (text) return text;
     } catch {
       // ignore
@@ -98,23 +93,27 @@ export async function scrapePlaceDetails(
   const currentUrl = page.url();
   const { center: parsedCenter } = parseCenterFromGoogleMapsUrl(currentUrl);
 
-  const name = await getTextFromFirstVisible(page, [
+  const rawName = await getTextFromFirstVisible(page, [
     "h1",
     ".DUwDvf",
   ]);
 
-  const address = await getTextFromFirstVisible(page, [
+  const rawAddress = await getTextFromFirstVisible(page, [
     'button[data-item-id*="address"]',
     'button[aria-label*="Address"]',
     'button[aria-label*="Adres"]',
     'button[aria-label*="Adresse"]',
   ]);
 
-  const phone = await getTextFromFirstVisible(page, [
+  const rawPhone = await getTextFromFirstVisible(page, [
     'button[data-item-id^="phone"]',
     'button[aria-label*="Phone"]',
     'button[aria-label*="Telefon"]',
   ]);
+
+  const name = rawName;
+  const address = normalizeAddressForOutput(rawAddress);
+  const phone = rawPhone;
 
   const website = await getHrefFromFirstVisible(page, [
     'a[data-item-id="authority"]',

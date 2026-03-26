@@ -68,10 +68,12 @@ export async function clickSearchThisArea(page: Page): Promise<boolean> {
   return false;
 }
 
-async function getResultsFeed(page: Page): Promise<Locator | null> {
+export async function getResultsFeed(page: Page): Promise<Locator | null> {
   const candidates = [
     'div[role="feed"]',
     '.m6QErb[aria-label]',
+    '[role="main"] [role="feed"]',
+    'div.m6QErb.DxyBCb',
   ];
 
   for (const selector of candidates) {

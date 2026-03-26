@@ -4,16 +4,20 @@ export class SeedState {
   private items = new Map<string, PlaceSeed>();
 
   addMany(records: PlaceSeed[]): number {
-    let added = 0;
+    return this.addManyWithNew(records).added;
+  }
+
+  addManyWithNew(records: PlaceSeed[]): { added: number; newSeeds: PlaceSeed[] } {
+    const newSeeds: PlaceSeed[] = [];
 
     for (const record of records) {
       if (!this.items.has(record.id)) {
         this.items.set(record.id, record);
-        added += 1;
+        newSeeds.push(record);
       }
     }
 
-    return added;
+    return { added: newSeeds.length, newSeeds };
   }
 
   getAll(): PlaceSeed[] {

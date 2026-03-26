@@ -7,6 +7,7 @@ import {
   isPastHorizontalBounds,
 } from "./geometry";
 import { focusMap, getMapCenterFromUrl, pressArrow } from "./map";
+import { collectAllSeedsFromResultsPanel } from "./scrollResults";
 import { clickSearchThisArea, collectVisibleSeeds } from "./scraper";
 import { saveSeedsToJson } from "./storage";
 import { SeedState } from "./state";
@@ -17,20 +18,29 @@ export async function collectSeedsAndPersist(
   label: string,
 ): Promise<void> {
   const clicked = await clickSearchThisArea(page);
-  const visible = await collectVisibleSeeds(page);
-  const added = state.addMany(visible);
 
-  saveSeedsToJson(config.output.seedsJsonPath, state.getAll());
+  if (clicked) {
+    await collectAllSeedsFromResultsPanel(page, state, label);
+  } else {
+    const visible = await collectVisibleSeeds(page);
+    const { added, newSeeds } = state.addManyWithNew(visible);
+
+    saveSeedsToJson(config.output.seedsJsonPath, state.getAll());
+
+    console.log(
+      `[collect] ${label} searchThisAreaClicked=false visible=${visible.length} new=${added} total=${state.size}`,
+    );
+
+    for (const item of newSeeds) {
+      console.log(
+        `[seed] id=${item.id} | cid=${item.cid} | name=${item.name ?? "null"} | lat=${item.lat} | lng=${item.lng}`,
+      );
+    }
+  }
 
   console.log(
-    `[collect] ${label} searchThisAreaClicked=${clicked} visible=${visible.length} new=${added} total=${state.size}`,
+    `[collect] ${label} done searchThisAreaClicked=${clicked} totalUnique=${state.size}`,
   );
-
-  for (const item of visible) {
-    console.log(
-      `[seed] id=${item.id} | cid=${item.cid} | name=${item.name ?? "null"} | lat=${item.lat} | lng=${item.lng}`,
-    );
-  }
 
   await focusMap(page);
   await page.waitForTimeout(250);
