@@ -52,4 +52,5 @@ export const config = {
     seedsJsonPath: "output/results-seeds.json",
     detailsJsonPath: "output/results-final.json",
   },
+  language: "de-DE",
 } as const;

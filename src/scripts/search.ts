@@ -39,6 +39,7 @@ async function main() {
 
   const context = await browser.newContext({
     viewport: config.map.viewport,
+    locale: config.language,
   });
 
   const page = await context.newPage();

@@ -26,6 +26,7 @@ async function main() {
 
   const context = await browser.newContext({
     viewport: { width: 1280, height: 900 },
+    locale: config.language,
   });
 
   const page = await context.newPage();
