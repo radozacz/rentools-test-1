@@ -33,7 +33,7 @@ export async function collectSeedsAndPersist(
 
     for (const item of newSeeds) {
       console.log(
-        `[seed] id=${item.id} | cid=${item.cid} | name=${item.name ?? "null"} | lat=${item.lat} | lng=${item.lng}`,
+        `[seed] id=${item.id} | title=${item.title ?? "null"} | address=${item.address ?? "null"} | phone=${item.phone ?? "null"} | website=${item.website ?? "null"} | lat=${item.lat} | lng=${item.lng}`,
       );
     }
   }

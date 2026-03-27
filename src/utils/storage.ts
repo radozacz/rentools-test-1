@@ -20,6 +20,11 @@ export function loadSeedsFromJson(filePath: string): PlaceSeed[] {
   const parsed = JSON.parse(raw) as PlaceSeed[];
   return parsed.map((r) => ({
     ...r,
+    title: r.title ?? r.name ?? null,
+    name: r.name ?? r.title ?? null,
+    address: r.address ?? null,
+    phone: r.phone ?? null,
+    website: r.website ?? null,
     placeId:
       r.placeId ??
       (r.href ? extractPlaceIdFromMapsUrl(r.href) : null) ??
