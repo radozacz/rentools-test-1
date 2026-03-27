@@ -147,8 +147,6 @@ export async function extractPlaceSeedFromArticleCard(
 
     const id = parsed.cid ?? href ?? `${title ?? "unknown"}::${index}`;
 
-    const name = title;
-
     console.log(
       `[result-card] title=${title ?? "null"} address=${address ?? "null"} phone=${phone ?? "null"} website=${website ?? "null"}`,
     );
@@ -158,7 +156,6 @@ export async function extractPlaceSeedFromArticleCard(
       cid: parsed.cid,
       placeId,
       title,
-      name,
       address,
       phone,
       website,

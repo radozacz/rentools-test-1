@@ -4,8 +4,8 @@
   "description": "Automated contact data collection for equipment rental companies from interactive maps",
   "main": "dist/index.js",
   "scripts": {
+    "start": "ts-node src/scripts/search.ts",
     "start-search": "ts-node src/scripts/search.ts",
-    "start-details": "ts-node src/scripts/details.ts",
     "build": "tsc"
   },
   "keywords": ["scraper", "playwright", "map", "rental"],

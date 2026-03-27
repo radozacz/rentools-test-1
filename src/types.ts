@@ -7,8 +7,6 @@ export type PlaceSeed = {
   placeId: string | null;
   /** Display title from the results card (`.fontHeadlineSmall`). */
   title: string | null;
-  /** Same as `title` when present; kept for older consumers. */
-  name: string | null;
   address: string | null;
   phone: string | null;
   website: string | null;
