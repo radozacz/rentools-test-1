@@ -141,11 +141,16 @@ export async function extractPlaceSeedFromArticleCard(
       console.debug("[result-card] address extraction failed", { index, e });
     }
 
+    // Log HTML
+    // const html = await card.evaluate((el) => el.outerHTML);
+    // console.log("=== CARD HTML ===");
+    // console.log(html);
+
     try {
-      const phoneEl = card.locator("[appcallback_target_phone]").first();
+      const phoneEl = card.locator(".UsdlK");
       if ((await phoneEl.count()) > 0) {
-        const raw = await phoneEl.getAttribute("appcallback_target_phone");
-        phone = normalizeText(raw);
+        const raw = await phoneEl.textContent();
+        phone = (normalizeText(raw) || "").replace(/\s+/g, "");
       }
     } catch (e) {
       console.debug("[result-card] phone extraction failed", { index, e });
@@ -191,7 +196,7 @@ export async function extractPlaceSeedFromArticleCard(
 }
 
 export async function clickSearchThisArea(page: Page): Promise<boolean> {
-  const el = page.locator(config.search.searchThisAreaButtonSelector).first();
+  const el = page.locator(config.selectors.searchThisAreaButtonSelector).first();
 
   try {
     if (!(await el.isVisible())) {
