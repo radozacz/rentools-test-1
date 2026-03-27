@@ -2,6 +2,7 @@ import type { Locator, Page } from "playwright";
 import { config } from "../config";
 import type { PlaceSeed } from "../types";
 import { getGoogleMapsOrigin } from "./map";
+import { extractPlaceIdFromMapsUrl } from "./placeId";
 
 function normalizeText(value: string | null | undefined): string | null {
   if (!value) return null;
@@ -132,11 +133,17 @@ export async function collectVisibleSeeds(page: Page): Promise<PlaceSeed[]> {
       href = absolutizeGoogleMapsHref(href);
 
       const parsed = parseGoogleMapsHref(href);
+      const placeId = href ? extractPlaceIdFromMapsUrl(href) : null;
+      if (href && placeId === null) {
+        console.debug(`[placeId] not found in url: ${href}`);
+      }
+
       const id = parsed.cid ?? href ?? `${name ?? "unknown"}::${i}`;
 
       results.push({
         id,
         cid: parsed.cid,
+        placeId,
         name,
         lat: parsed.lat,
         lng: parsed.lng,

@@ -2,6 +2,7 @@ import type { Page } from "playwright";
 import type { PlaceDetails, PlaceSeed } from "../types";
 import { cleanScrapedText, normalizeAddressForOutput } from "./text";
 import { parseCenterFromGoogleMapsUrl } from "./map";
+import { extractPlaceIdFromMapsUrl } from "./placeId";
 
 async function getTextFromFirstVisible(
   page: Page,
@@ -50,28 +51,13 @@ function extractCidFromUrl(url: string): string | null {
   return match ? match[1] : null;
 }
 
-function extractPlaceIdFromPageUrl(url: string): string | null {
-  // This is best-effort only. Real Google placeId is not always exposed clearly.
-  const placeIdParam = url.match(/[?&]ftid=0x([0-9a-f:]+)/i);
-  if (placeIdParam) {
-    return placeIdParam[1];
-  }
-
-  const cidLike = url.match(/!1s(0x[0-9a-f]+:0x[0-9a-f]+)/i);
-  if (cidLike) {
-    return cidLike[1];
-  }
-
-  return null;
-}
-
 export async function scrapePlaceDetails(
   page: Page,
   seed: PlaceSeed,
 ): Promise<PlaceDetails> {
   if (!seed.href) {
     return {
-      placeId: null,
+      placeId: seed.placeId ?? null,
       cid: seed.cid,
       sourceId: seed.id,
       name: seed.name,
@@ -122,7 +108,11 @@ export async function scrapePlaceDetails(
     'a[aria-label*="Webseite"]',
   ]);
 
-  const placeId = extractPlaceIdFromPageUrl(currentUrl);
+  const placeIdFromPage = extractPlaceIdFromMapsUrl(currentUrl);
+  if (placeIdFromPage === null && !(seed.placeId ?? null)) {
+    console.debug(`[placeId] not found in url: ${currentUrl}`);
+  }
+  const placeId = placeIdFromPage ?? seed.placeId ?? null;
   const cid = extractCidFromUrl(currentUrl) ?? seed.cid;
 
   return {

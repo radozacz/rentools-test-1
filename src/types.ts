@@ -3,6 +3,8 @@ export type LatLng = { lat: number; lng: number };
 export type PlaceSeed = {
   id: string;
   cid: string | null;
+  /** Google Place ID from `!19s` in the listing href, when present. */
+  placeId: string | null;
   name: string | null;
   lat: number | null;
   lng: number | null;

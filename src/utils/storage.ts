@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import type { PlaceDetails, PlaceSeed } from "../types";
+import { extractPlaceIdFromMapsUrl } from "./placeId";
 
 export function saveSeedsToJson(filePath: string, records: PlaceSeed[]): void {
   const absolutePath = path.join(process.cwd(), filePath);
@@ -16,7 +17,14 @@ export function loadSeedsFromJson(filePath: string): PlaceSeed[] {
   }
 
   const raw = fs.readFileSync(absolutePath, "utf-8");
-  return JSON.parse(raw) as PlaceSeed[];
+  const parsed = JSON.parse(raw) as PlaceSeed[];
+  return parsed.map((r) => ({
+    ...r,
+    placeId:
+      r.placeId ??
+      (r.href ? extractPlaceIdFromMapsUrl(r.href) : null) ??
+      null,
+  }));
 }
 
 export function loadFinalFromJson(filePath: string): PlaceDetails[] {
