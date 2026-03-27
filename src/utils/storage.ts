@@ -21,6 +21,7 @@ export function loadSeedsFromJson(filePath: string): PlaceSeed[] {
   return parsed.map((r) => ({
     ...r,
     title: r.title ?? null,
+    category: r.category ?? null,
     address: r.address ?? null,
     phone: r.phone ?? null,
     website: r.website ?? null,

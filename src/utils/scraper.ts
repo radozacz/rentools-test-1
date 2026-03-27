@@ -99,6 +99,7 @@ export async function extractPlaceSeedFromArticleCard(
   index: number,
 ): Promise<PlaceSeed | null> {
   let title: string | null = null;
+  let category: string | null = null;
   let address: string | null = null;
   let phone: string | null = null;
   let website: string | null = null;
@@ -109,6 +110,25 @@ export async function extractPlaceSeedFromArticleCard(
       title = normalizeText(t);
     } catch (e) {
       console.debug("[result-card] title extraction failed", { index, e });
+    }
+
+    try {
+      const blocks = card.locator(".W4Efsd.W4Efsd");
+      const blockCount = await blocks.count();
+      if (blockCount >= 2) {
+        const secondBlock = blocks.nth(1);
+        try {
+          const c = await secondBlock
+            .locator("span:first-child span:first-child")
+            .first()
+            .textContent();
+          category = normalizeText(c);
+        } catch (e) {
+          console.debug("[result-card] category extraction failed", { index, e });
+        }
+      }
+    } catch (e) {
+      console.debug("[result-card] category block failed", { index, e });
     }
 
     try {
@@ -147,8 +167,8 @@ export async function extractPlaceSeedFromArticleCard(
 
     const id = parsed.cid ?? href ?? `${title ?? "unknown"}::${index}`;
 
-    console.log(
-      `[result-card] title=${title ?? "null"} address=${address ?? "null"} phone=${phone ?? "null"} website=${website ?? "null"}`,
+    console.debug(
+      `[result-card] title=${title ?? "null"} category=${category ?? "null"} address=${address ?? "null"} phone=${phone ?? "null"} website=${website ?? "null"}`,
     );
 
     return {
@@ -156,6 +176,7 @@ export async function extractPlaceSeedFromArticleCard(
       cid: parsed.cid,
       placeId,
       title,
+      category,
       address,
       phone,
       website,
