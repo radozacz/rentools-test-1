@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import type { Bounds, HorizontalDirection, LatLng } from "../types";
 
-type Polygon = LatLng[];
+export type Polygon = LatLng[];
 
 interface GeoJsonFeature {
   type: "Feature";

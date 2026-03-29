@@ -15,7 +15,6 @@ export function cleanScrapedText(value: string | null | undefined): string | nul
     .replace(/\s+/g, " ")
     .trim();
 
-  // Remove leading non-letter, non-number characters (icons, bullets, etc.)
   result = result.replace(/^[^\p{L}\p{N}]+/u, "").trim();
 
   return result.length ? result : null;
@@ -29,10 +28,7 @@ export function normalizeAddressForOutput(address: string | null): string | null
   const cleaned = cleanScrapedText(address);
   if (!cleaned) return null;
 
-  const countryNamesToRemove = [
-    config.geo.countryName,
-    ...config.geo.allowedCountryNames,
-  ];
+  const countryNamesToRemove = [...config.geo.allowedCountryNames];
 
   let result = cleaned;
   for (const name of countryNamesToRemove) {

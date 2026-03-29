@@ -60,7 +60,7 @@ async function main() {
   const initialCenter = await getMapCenterFromUrl(page);
   console.log("[initial center]", initialCenter);
 
-  await collectSeedsAndPersist(page, state, "initial");
+  await collectSeedsAndPersist(page, state, "initial", polygon);
 
   let rowIndex = 1;
   let direction: HorizontalDirection = "right";
@@ -76,6 +76,7 @@ async function main() {
       direction,
       rowIndex,
       state,
+      polygon,
     );
 
     if (!horizontalEndCenter) {
@@ -90,6 +91,7 @@ async function main() {
       page,
       nextRowIndex,
       state,
+      polygon,
     );
 
     if (!afterDownCenter) {

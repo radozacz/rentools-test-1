@@ -5,16 +5,14 @@
 
 export const config = {
   // ---------------------------------------------------------------------------
-  // Geo — country / polygon used for sampling and text checks
+  // Geo — country polygon for map traversal and per-result coordinate checks
   // ---------------------------------------------------------------------------
   geo: {
-    /** Primary country label for this run (e.g. shown in address validation). Used in `src/utils/text.ts`. */
-    countryName: "Germany",
-    /** Path to GeoJSON or polygon JSON defining the search region. Loaded in `src/scripts/search.ts` via `loadCountryPolygon`. */
+    /** GeoJSON path; loaded in `src/scripts/search.ts` and used when filtering scraped seeds. */
     polygonPath: "src/data/germany-coordinates.json",
-    /** Additional spellings accepted as “in country” when parsing location text. Spread into checks in `src/utils/text.ts`. */
+    /** When coordinates are missing, an address containing one of these (substring, case-insensitive) counts as in-country. */
     allowedCountryNames: ["Germany", "Deutschland"],
-    /** Neighbour / nearby regions to treat as out-of-area when filtering text (reserved list; extend when wiring validation). */
+    /** Substrings in the address that reject a seed (case-insensitive), as a safety layer near borders. */
     blockedCountryNames: [
       "Poland",
       "Polska",

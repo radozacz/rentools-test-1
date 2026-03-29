@@ -1,5 +1,6 @@
 import type { Locator, Page } from "playwright";
 import { config } from "../config";
+import type { Polygon } from "./geometry";
 import { getResultsFeed, collectVisibleSeeds } from "./scraper";
 import { saveSeedsToJson } from "./storage";
 import type { SeedState } from "./state";
@@ -90,6 +91,7 @@ export async function collectAllSeedsFromResultsPanel(
   page: Page,
   state: SeedState,
   contextLabel: string,
+  polygon: Polygon,
 ): Promise<void> {
   console.log(
     `[collect-panel] ${contextLabel} starting incremental collect (virtualization-safe)…`,
@@ -103,7 +105,7 @@ export async function collectAllSeedsFromResultsPanel(
     console.warn(
       "[collect-panel] could not resolve results feed (exception). Falling back to single collect.",
     );
-    const visible = await collectVisibleSeeds(page);
+    const visible = await collectVisibleSeeds(page, polygon);
     const { added } = state.addManyWithNew(visible);
     saveSeedsToJson(config.output.seedsJsonPath, state.getAll());
     console.log(
@@ -116,7 +118,7 @@ export async function collectAllSeedsFromResultsPanel(
     console.warn(
       "[collect-panel] results feed not found — falling back to single collectVisibleSeeds.",
     );
-    const visible = await collectVisibleSeeds(page);
+    const visible = await collectVisibleSeeds(page, polygon);
     const { added } = state.addManyWithNew(visible);
     saveSeedsToJson(config.output.seedsJsonPath, state.getAll());
     console.log(
@@ -137,7 +139,7 @@ export async function collectAllSeedsFromResultsPanel(
       break;
     }
 
-    const visible = await collectVisibleSeeds(page);
+    const visible = await collectVisibleSeeds(page, polygon);
     const { added, newSeeds } = state.addManyWithNew(visible);
 
     saveSeedsToJson(config.output.seedsJsonPath, state.getAll());

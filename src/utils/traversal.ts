@@ -1,11 +1,8 @@
 import type { Page } from "playwright";
 import { config } from "../config";
 import type { Bounds, HorizontalDirection, LatLng } from "../types";
-import {
-  getTopLeftCorner,
-  isBelowBounds,
-  isPastHorizontalBounds,
-} from "./geometry";
+import type { Polygon } from "./geometry";
+import { isPastHorizontalBounds } from "./geometry";
 import { focusMap, getMapCenterFromUrl, pressArrow } from "./map";
 import { collectAllSeedsFromResultsPanel } from "./scrollResults";
 import { clickSearchThisArea, collectVisibleSeeds } from "./scraper";
@@ -16,13 +13,14 @@ export async function collectSeedsAndPersist(
   page: Page,
   state: SeedState,
   label: string,
+  polygon: Polygon,
 ): Promise<void> {
   const clicked = await clickSearchThisArea(page);
 
   if (clicked) {
-    await collectAllSeedsFromResultsPanel(page, state, label);
+    await collectAllSeedsFromResultsPanel(page, state, label, polygon);
   } else {
-    const visible = await collectVisibleSeeds(page);
+    const visible = await collectVisibleSeeds(page, polygon);
     const { added, newSeeds } = state.addManyWithNew(visible);
 
     saveSeedsToJson(config.output.seedsJsonPath, state.getAll());
@@ -52,6 +50,7 @@ export async function moveHorizontallyUntilOutside(
   direction: HorizontalDirection,
   rowIndex: number,
   state: SeedState,
+  polygon: Polygon,
 ): Promise<LatLng | null> {
   let step = 0;
 
@@ -79,6 +78,7 @@ export async function moveHorizontallyUntilOutside(
       page,
       state,
       `row-${rowIndex}-${direction}-step-${step}`,
+      polygon,
     );
 
     if (isPastHorizontalBounds(center, bounds, direction)) {
@@ -94,6 +94,7 @@ export async function moveDownByConfiguredAmount(
   page: Page,
   nextRowIndex: number,
   state: SeedState,
+  polygon: Polygon,
 ): Promise<LatLng | null> {
   console.log(
     `[row ${nextRowIndex}] [down] moving down by ${config.movement.verticalStepCount} steps...`,
@@ -121,6 +122,7 @@ export async function moveDownByConfiguredAmount(
       page,
       state,
       `row-${nextRowIndex}-down-${i + 1}`,
+      polygon,
     );
 
     lastCenter = center;

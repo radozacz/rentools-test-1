@@ -1,6 +1,8 @@
 import type { Locator, Page } from "playwright";
 import { config } from "../config";
 import type { PlaceSeed } from "../types";
+import { shouldKeepSeedForCountry } from "./countryFilter";
+import type { Polygon } from "./geometry";
 import { getGoogleMapsOrigin } from "./map";
 import { extractPlaceIdFromMapsUrl } from "./placeId";
 
@@ -246,7 +248,10 @@ export async function getResultsFeed(page: Page): Promise<Locator | null> {
   return null;
 }
 
-export async function collectVisibleSeeds(page: Page): Promise<PlaceSeed[]> {
+export async function collectVisibleSeeds(
+  page: Page,
+  polygon: Polygon,
+): Promise<PlaceSeed[]> {
   const feed = await getResultsFeed(page);
   if (!feed) return [];
 
@@ -256,7 +261,9 @@ export async function collectVisibleSeeds(page: Page): Promise<PlaceSeed[]> {
 
   for (let i = 0; i < count; i++) {
     const seed = await extractPlaceSeedFromArticleCard(cards.nth(i), i);
-    if (seed) results.push(seed);
+    if (!seed) continue;
+    if (!shouldKeepSeedForCountry(seed, polygon)) continue;
+    results.push(seed);
   }
 
   return results;
