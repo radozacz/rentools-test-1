@@ -99,7 +99,7 @@ async function resolvePrimaryPlaceHref(card: Locator): Promise<string | null> {
 /**
  * Parses one results-list row (`role="article"`). All selectors are scoped to `card`.
  */
-export async function extractPlaceSeedFromArticleCard(
+async function extractPlaceSeedFromArticleCard(
   card: Locator,
   index: number,
 ): Promise<PlaceSeed | null> {

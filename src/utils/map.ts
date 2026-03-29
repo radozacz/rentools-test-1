@@ -6,7 +6,7 @@ export function getGoogleMapsOrigin(): string {
   return new URL(config.map.googleMapsBaseUrl).origin;
 }
 
-export type MoveDirection = "up" | "down" | "left" | "right";
+type MoveDirection = "up" | "down" | "left" | "right";
 
 const directionToKey: Record<MoveDirection, string> = {
   up: "ArrowUp",
@@ -46,7 +46,7 @@ export async function pressArrow(
   await page.waitForTimeout(stepSleepMs);
 }
 
-export function parseCenterFromGoogleMapsUrl(url: string): {
+function parseCenterFromGoogleMapsUrl(url: string): {
   center: LatLng | null;
   zoom: number | null;
 } {
