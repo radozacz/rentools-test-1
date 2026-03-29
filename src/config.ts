@@ -27,6 +27,13 @@ export const config = {
     },
     googleMapsBaseUrl: "https://www.google.de/maps",
   },
+  scraping: {
+    /**
+     * When true: if no external (non-Google) website is found among card links, keep the use the last anchor (typically a Google Maps URL) as `website`.
+     * When false: set `website` to null when only Google-owned links exist.
+     */
+    allowGoogleWebsiteFallback: true,
+  },
   traversal: {
     maxRows: 50,
   },

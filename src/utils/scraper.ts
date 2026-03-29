@@ -53,7 +53,10 @@ function pickWebsiteHrefFromAnchors(absoluteHrefs: string[]): string | null {
   if (nonGoogle.length > 0) {
     return nonGoogle[0] ?? null;
   }
-  return absoluteHrefs[absoluteHrefs.length - 1] ?? null;
+  if (!config.scraping.allowGoogleWebsiteFallback) {
+    return null;
+  }
+  return absoluteHrefs[absoluteHrefs.length - 1] ?? null
 }
 
 async function collectAnchorHrefs(card: Locator): Promise<string[]> {
