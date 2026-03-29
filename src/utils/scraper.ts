@@ -57,7 +57,7 @@ function pickWebsiteHrefFromAnchors(absoluteHrefs: string[]): string | null {
 }
 
 async function collectAnchorHrefs(card: Locator): Promise<string[]> {
-  const links = card.locator("a[href]");
+  const links = card.locator(config.selectors.card.websiteLinks);
   const n = await links.count();
   const out: string[] = [];
   for (let i = 0; i < n; i++) {
@@ -76,7 +76,7 @@ async function collectAnchorHrefs(card: Locator): Promise<string[]> {
 async function resolvePrimaryPlaceHref(card: Locator): Promise<string | null> {
   try {
     const anchor = card
-      .locator('a[href*="/maps/place/"], a[href*="/place/"]')
+      .locator(config.selectors.card.primaryPlaceLink)
       .first();
     if ((await anchor.count()) > 0) {
       return absolutizeGoogleMapsHref(await anchor.getAttribute("href"));
@@ -106,20 +106,23 @@ export async function extractPlaceSeedFromArticleCard(
 
   try {
     try {
-      const t = await card.locator(".fontHeadlineSmall").first().textContent();
+      const t = await card
+        .locator(config.selectors.card.title)
+        .first()
+        .textContent();
       title = normalizeText(t);
     } catch (e) {
       console.debug("[result-card] title extraction failed", { index, e });
     }
 
     try {
-      const blocks = card.locator(".W4Efsd.W4Efsd");
+      const blocks = card.locator(config.selectors.card.categoryBlock);
       const blockCount = await blocks.count();
       if (blockCount >= 2) {
         const secondBlock = blocks.nth(1);
         try {
           const c = await secondBlock
-            .locator("span:first-child span:first-child")
+            .locator(config.selectors.card.categorySecondBlockInner)
             .first()
             .textContent();
           category = normalizeText(c);
@@ -133,7 +136,7 @@ export async function extractPlaceSeedFromArticleCard(
 
     try {
       const addrLoc = card
-        .locator(".W4Efsd > .W4Efsd > span:last-child > span:last-child")
+        .locator(config.selectors.card.address)
         .first();
       const a = await addrLoc.textContent();
       address = normalizeText(a);
@@ -147,7 +150,7 @@ export async function extractPlaceSeedFromArticleCard(
     // console.log(html);
 
     try {
-      const phoneEl = card.locator(".UsdlK");
+      const phoneEl = card.locator(config.selectors.card.phone);
       if ((await phoneEl.count()) > 0) {
         const raw = await phoneEl.textContent();
         phone = (normalizeText(raw) || "").replace(/\s+/g, "");
@@ -196,7 +199,9 @@ export async function extractPlaceSeedFromArticleCard(
 }
 
 export async function clickSearchThisArea(page: Page): Promise<boolean> {
-  const el = page.locator(config.selectors.searchThisAreaButtonSelector).first();
+  const el = page
+    .locator(config.selectors.search.searchThisAreaButton)
+    .first();
 
   try {
     if (!(await el.isVisible())) {
@@ -217,12 +222,7 @@ export async function clickSearchThisArea(page: Page): Promise<boolean> {
 }
 
 export async function getResultsFeed(page: Page): Promise<Locator | null> {
-  const candidates = [
-    'div[role="feed"]',
-    '.m6QErb[aria-label]',
-    '[role="main"] [role="feed"]',
-    "div.m6QErb.DxyBCb",
-  ];
+  const candidates = config.selectors.sidebar.feed;
 
   for (const selector of candidates) {
     const locator = page.locator(selector).first();
@@ -247,7 +247,7 @@ export async function collectVisibleSeeds(page: Page): Promise<PlaceSeed[]> {
   const feed = await getResultsFeed(page);
   if (!feed) return [];
 
-  const cards = feed.locator('[role="article"]');
+  const cards = feed.locator(config.selectors.sidebar.article);
   const count = await cards.count();
   const results: PlaceSeed[] = [];
 

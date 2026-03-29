@@ -51,6 +51,28 @@ export const config = {
   },
   language: "de-DE",
   selectors: {
-    searchThisAreaButtonSelector: 'button[jsaction*="search.refresh"]',
+    search: {
+      searchThisAreaButton: 'button[jsaction*="search.refresh"]',
+    },
+    sidebar: {
+      /** Tried in order until a visible, sufficiently large feed is found. */
+      feed: [
+        'div[role="feed"]',
+        '.m6QErb[aria-label]',
+        '[role="main"] [role="feed"]',
+        "div.m6QErb.DxyBCb",
+      ],
+      article: '[role="article"]',
+    },
+    card: {
+      websiteLinks: "a[href]",
+      primaryPlaceLink: 'a[href*="/maps/place/"], a[href*="/place/"]',
+      title: ".fontHeadlineSmall",
+      categoryBlock: ".W4Efsd.W4Efsd",
+      categorySecondBlockInner: "span:first-child span:first-child",
+      address:
+        ".W4Efsd > .W4Efsd > span:last-child > span:last-child",
+      phone: ".UsdlK",
+    },
   },
 } as const;
